@@ -23,22 +23,22 @@ object Build extends Build {
       "com.chuusai" %% "shapeless" % "1.2.+",
       "org.scalatest" %% "scalatest" % "2.0.+" % "test"))
 
-  lazy val obs = Project("obs", file(".")).settings(defaultSettings:_*).aggregate(
+  lazy val obs = Project("volpts", file(".")).settings(defaultSettings:_*).aggregate(
     compiler)
 
-  lazy val compiler = Project("obs-compiler", file("compiler")).settings(defaultSettings:_*).settings(
+  lazy val compiler = Project("volpts-compiler", file("compiler")).settings(defaultSettings:_*).settings(
     libraryDependencies ++= Seq(
       "com.assembla.scala-incubator" %% "graph-dot" % "1.6.+",
       "org.scalanlp" %% "breeze-core" % "0.2.+",
       "org.ow2.asm" % "asm-all" % "4.+")).dependsOn(parsing)
 
-  lazy val parsing = Project("obs-parsing", file("parsing")).settings(
+  lazy val parsing = Project("volpts-parsing", file("parsing")).settings(
     libraryDependencies ++= Seq(
       "com.assembla.scala-incubator" %% "graph-dot" % "1.6.+",
       "org.scalanlp" %% "breeze-core" % "0.2.+",
       "org.ow2.asm" % "asm-all" % "4.+")).dependsOn(meta)
 
-  lazy val meta = Project("obs-meta", file("meta")).settings(defaultSettings:_*).settings(
+  lazy val meta = Project("volpts-meta", file("meta")).settings(defaultSettings:_*).settings(
     libraryDependencies <++= scalaVersion(v => Seq(
       "org.scala-lang" % "scala-compiler" % v)))
 }

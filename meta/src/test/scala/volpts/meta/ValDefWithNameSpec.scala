@@ -1,11 +1,11 @@
-package obs
+package volpts
 package meta
 
 import org.scalatest.FunSpec
 import language.experimental.macros
 
 class ValDefWithNameSpec extends FunSpec {
-  describe("obs.meta.ValDefWithName") {
+  describe("volpts.meta.ValDefWithName") {
     it("should call ValWithName with the val name and assign the result to that val.") {
       case class Something(name: Option[String] = None) {
         def withName(newName: String) = Something(Some(newName))
