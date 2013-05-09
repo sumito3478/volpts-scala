@@ -23,25 +23,31 @@ object Build extends Build {
       "com.chuusai" %% "shapeless" % "1.2.+",
       "org.scalatest" %% "scalatest" % "2.0.+" % "test"))
 
-  lazy val obs = Project("volpts", file(".")).settings(defaultSettings:_*).aggregate(compiler)
+  lazy val obs = Project("volpts", file(".")).settings(defaultSettings: _*).aggregate(compiler)
 
-  lazy val compiler = Project("volpts-compiler", file("compiler")).settings(defaultSettings:_*).settings(
+  lazy val compiler = Project("volpts-compiler", file("compiler")).settings(defaultSettings: _*).settings(
     libraryDependencies ++= Seq(
       "com.assembla.scala-incubator" %% "graph-dot" % "1.6.+",
       "org.scalanlp" %% "breeze-core" % "0.2.+",
-      "org.ow2.asm" % "asm-all" % "4.+")).dependsOn(parsing)
+      "org.ow2.asm" % "asm-all" % "4.+")).
+    dependsOn(parsing, util)
 
   lazy val parsing = Project("volpts-parsing", file("parsing")).settings(
     libraryDependencies ++= Seq(
       "com.assembla.scala-incubator" %% "graph-dot" % "1.6.+",
       "org.scalanlp" %% "breeze-core" % "0.2.+",
-      "org.ow2.asm" % "asm-all" % "4.+")).dependsOn(meta)
+      "org.ow2.asm" % "asm-all" % "4.+")).
+    dependsOn(meta, util)
 
-  lazy val collection = Project("vaolpts-collection", file("collection")).settings(defaultSettings:_*).dependsOn(meta)
+  lazy val collection = Project("vaolpts-collection", file("collection")).settings(defaultSettings: _*).settings(
+    libraryDependencies ++= Seq(
+      "com.assembla.scala-incubator" %% "graph-core" % "1.6.+")).
+    dependsOn(meta, util)
 
-  lazy val meta = Project("volpts-meta", file("meta")).settings(defaultSettings:_*).settings(
+  lazy val meta = Project("volpts-meta", file("meta")).settings(defaultSettings: _*).settings(
     libraryDependencies <++= scalaVersion(v => Seq(
-      "org.scala-lang" % "scala-compiler" % v)))
+      "org.scala-lang" % "scala-compiler" % v))).
+    dependsOn(util)
 
-  lazy val util = Project("vaolpts-util", file("util")).settings(defaultSettings:_*)
+  lazy val util = Project("vaolpts-util", file("util")).settings(defaultSettings: _*)
 }
