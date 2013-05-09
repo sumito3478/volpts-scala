@@ -37,6 +37,8 @@ object Build extends Build {
       "org.scalanlp" %% "breeze-core" % "0.2.+",
       "org.ow2.asm" % "asm-all" % "4.+")).dependsOn(meta)
 
+  lazy val collection = Project("vaolpts-collection", file("collection")).settings(defaultSettings:_*).dependsOn(meta)
+
   lazy val meta = Project("volpts-meta", file("meta")).settings(defaultSettings:_*).settings(
     libraryDependencies <++= scalaVersion(v => Seq(
       "org.scala-lang" % "scala-compiler" % v)))
