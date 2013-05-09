@@ -42,4 +42,6 @@ object Build extends Build {
   lazy val meta = Project("volpts-meta", file("meta")).settings(defaultSettings:_*).settings(
     libraryDependencies <++= scalaVersion(v => Seq(
       "org.scala-lang" % "scala-compiler" % v)))
+
+  lazy val util = Project("vaolpts-util", file("util")).settings(defaultSettings:_*)
 }
