@@ -2,7 +2,6 @@ package volpts
 
 package object meta {
 
-  import annotation.tailrec
   import language.experimental.macros
   import reflect.macros._
 
@@ -16,18 +15,18 @@ package object meta {
 
   def valDefWithName[A: c.WeakTypeTag](c: Context)(valWithName: c.Expr[ValWithName[A]]): c.Expr[A] = {
     import c.universe._
-    val method = c.macroApplication.symbol.name
-    @tailrec
-    def enclosingVal(trees: List[c.Tree]): String = trees match {
-      case ValDef(_, name, _, _) :: _ => name.decoded.trim
-      case (_: Apply | _: Select | _: TypeApply) :: xs => enclosingVal(xs)
-      case Block(_, _) :: DefDef(mods, name, _, _, _, _) :: xs if mods.hasFlag(Flag.LAZY) => name.decoded.trim
-      case _ => {
-        c.error(c.enclosingPosition, s"expected: val someName = ${method.decoded}[SomeType](someTypeInstance)")
-        "<error>"
-      }
-    }
-    val name = c.Expr[String](Literal(Constant(enclosingVal(c.toCompilerContext.callsiteTyper.context.enclosingContextChain.map(_.tree.asInstanceOf[c.Tree])))))
+    val name = c.Expr[String](Literal(Constant((for {
+      trees <- c.toCompilerContext.callsiteTyper.context.enclosingContextChain.map(_.tree.asInstanceOf[c.Tree]).tails
+      name <- trees match {
+        case ValDef(_, name, _, _) :: _ => Some(name.decoded.trim)
+        case (_: Apply | _: Select | _: TypeApply) :: _ => None
+        case Block(_, _) :: DefDef(mods, name, _, _, _, _) :: _
+          if mods.hasFlag(Flag.LAZY) => Some(name.decoded.trim)
+        case _ => {
+          c.error(c.enclosingPosition, s"expected: val someName = ${c.macroApplication.symbol.name.decoded}[SomeType](someTypeInstance)")
+          Some("<error>")
+        }
+      }} yield (name)).next)))
     c.universe.reify(valWithName.splice(name.splice))
   }
 }
