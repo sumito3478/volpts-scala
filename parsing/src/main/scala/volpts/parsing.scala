@@ -243,5 +243,9 @@ package object parsing {
     def inputRule(param: Source): Rule[Input] = Rule(in =>
       if(startsWith(in, param)) Success(slice(in, 0, size(param)), slice(in, size(param), size(in)))
       else Failure(Error(s"expected: $param actual: ${slice(in, 0, 10)}", frames) :: Nil))
+
+    lazy val any: Rule[Input] = Rule(in =>
+      if(pos(in) < wholeSize) Success(slice(pos(in), pos(in) + 1), slice(pos(in) + 1, wholeSize))
+      else Failure(Error("unexpected eof", frames) :: Nil))
   }
 }
