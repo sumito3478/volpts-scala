@@ -37,7 +37,7 @@ object Build extends Build {
       "com.assembla.scala-incubator" %% "graph-dot" % "1.6.+",
       "org.scalanlp" %% "breeze-core" % "0.2.+",
       "org.ow2.asm" % "asm-all" % "4.+")).
-    dependsOn(meta, corelib)
+    dependsOn(collection, meta, corelib)
 
   lazy val collection = Project("volpts-collection", file("collection")).settings(defaultSettings: _*).settings(
     libraryDependencies ++= Seq(
