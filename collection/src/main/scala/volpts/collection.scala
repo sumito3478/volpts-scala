@@ -95,4 +95,12 @@ package object collection {
 
     override def empty = new MutableArrayMap[A](size)
   }
+
+  case class StringView(src: String, from: Int, until: Int) extends IndexedSeq[Char] with IndexedSeqOptimized[Char, StringView] {
+    def apply(idx: Int) = src.charAt(from + idx)
+
+    def length: Int = until - from
+
+    override def slice(from: Int, until: Int) = StringView(src, this.from + from , this.from + until)
+  }
 }
