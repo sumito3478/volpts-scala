@@ -231,5 +231,13 @@ package object parsing {
       })
     }
 
+    import meta._
+    import language.experimental.macros
+
+    implicit def RuleValWithName[A](rule: Rule[A]): ValWithName[Rule[A]] = new ValWithName[Rule[A]] {
+      def apply(name: String) = Rule(in => rule(in), name)
+    }
+
+    def rule[A](valWithName: ValWithName[Rule[A]]): Rule[A] = macro valDefWithName[Rule[A]]
   }
 }
