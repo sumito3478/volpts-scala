@@ -268,4 +268,10 @@ package object parsing {
 
     def startsWith(self: StringView, x: String)(implicit __ : Dummy1.type): Boolean = self.startsWith(x)
   }
+
+  trait StringParser extends Parser[StringView, String] {
+    val inputOps: StringInputData
+
+    implicit def Rule(string: String): Rule[StringView] = inputRule(string)
+  }
 }
