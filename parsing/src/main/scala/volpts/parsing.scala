@@ -7,25 +7,32 @@ package object parsing {
   import scala.collection.immutable
   import annotation.tailrec
   import util._
+  import collection._
 
-  trait InputData[Input] {
+  trait InputData[Input, Source] {
     def slice(from: Int, until: Int): Input
 
     def slice(self: Input, from: Int, until: Int): Input
 
-    def size(self: Input): Int
+    def size(self: Input)(implicit __ : Dummy0.type): Int
+
+    def size(self: Source)(implicit __ : Dummy1.type): Int
 
     def wholeSize: Int
 
     def pos(self: Input): Int
 
     def until(self: Input): Int
+
+    def startsWith(self: Input, x: Input)(implicit __ : Dummy0.type): Boolean
+
+    def startsWith(self: Input, x: Source)(implicit __ : Dummy1.type): Boolean
   }
 
-  trait Parser[Input] {
+  trait Parser[Input, Source] {
     parser =>
 
-    val inputOp: InputData[Input]
+    val inputOp: InputData[Input, Source]
 
     import inputOp._
 
