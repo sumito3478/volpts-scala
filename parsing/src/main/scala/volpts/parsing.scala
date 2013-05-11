@@ -239,5 +239,9 @@ package object parsing {
     }
 
     def rule[A](valWithName: ValWithName[Rule[A]]): Rule[A] = macro valDefWithName[Rule[A]]
+
+    def inputRule(param: Source): Rule[Input] = Rule(in =>
+      if(startsWith(in, param)) Success(slice(in, 0, size(param)), slice(in, size(param), size(in)))
+      else Failure(Error(s"expected: $param actual: ${slice(in, 0, 10)}", frames) :: Nil))
   }
 }
