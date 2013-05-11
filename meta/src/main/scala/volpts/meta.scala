@@ -27,6 +27,6 @@ package object meta {
           Some("<error>")
         }
       }} yield (name)).next)))
-    c.universe.reify(valWithName.splice(name.splice))
+    reify(valWithName.splice(name.splice))
   }
 }
