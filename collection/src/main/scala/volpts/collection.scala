@@ -102,5 +102,7 @@ package object collection {
     def length: Int = until - from
 
     override def slice(from: Int, until: Int) = StringView(src, this.from + from , this.from + until)
+
+    override def toString = src.substring(from, until)
   }
 }
