@@ -39,7 +39,7 @@ object Build extends Build {
       "org.ow2.asm" % "asm-all" % "4.+")).
     dependsOn(meta, util)
 
-  lazy val collection = Project("vaolpts-collection", file("collection")).settings(defaultSettings: _*).settings(
+  lazy val collection = Project("volpts-collection", file("collection")).settings(defaultSettings: _*).settings(
     libraryDependencies ++= Seq(
       "com.assembla.scala-incubator" %% "graph-core" % "1.6.+")).
     dependsOn(meta, util)
@@ -49,5 +49,5 @@ object Build extends Build {
       "org.scala-lang" % "scala-compiler" % v))).
     dependsOn(util)
 
-  lazy val util = Project("vaolpts-util", file("util")).settings(defaultSettings: _*)
+  lazy val util = Project("volpts-util", file("util")).settings(defaultSettings: _*)
 }
