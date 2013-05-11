@@ -248,4 +248,24 @@ package object parsing {
       if(pos(in) < wholeSize) Success(slice(pos(in), pos(in) + 1), slice(pos(in) + 1, wholeSize))
       else Failure(Error("unexpected eof", frames) :: Nil))
   }
+
+  case class StringInputData(src: String) extends InputData[StringView, String] {
+    def slice(from: Int, until: Int): StringView = StringView(src, from, until)
+
+    def slice(self: StringView, from: Int, until: Int): StringView = self.slice(from, until)
+
+    def size(self: StringView)(implicit __ : Dummy0.type): Int = self.size
+
+    def size(self: String)(implicit __ : Dummy1.type): Int = self.length
+
+    def wholeSize: Int = src.length
+
+    def pos(self: StringView): Int = self.from
+
+    def until(self: StringView): Int = self.until
+
+    def startsWith(self: StringView, x: StringView)(implicit __ : Dummy0.type): Boolean = self.startsWith(x)
+
+    def startsWith(self: StringView, x: String)(implicit __ : Dummy1.type): Boolean = self.startsWith(x)
+  }
 }
