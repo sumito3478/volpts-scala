@@ -15,4 +15,10 @@ package object util {
       collected <- p.lift(tail)
     } yield(collected)).nextOption.getOrElse(default(self.repr))
   }
+
+  case class ***[+A, +B](head: A, tail: B)
+
+  implicit class AnyW[A](val self: A) {
+    def ***[B](that: B): ***[A, B] = util.***(self, that)
+  }
 }
