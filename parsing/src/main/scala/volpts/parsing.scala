@@ -272,6 +272,21 @@ package object parsing {
   trait StringParser extends Parser[StringView, String] {
     val inputOps: StringInputData
 
+    import inputOps._
+
     implicit def Rule(string: String): Rule[StringView] = inputRule(string)
+
+    case class Categories(names: String*)
+
+    import scala.util.matching.Regex
+
+    private[this] def Rule(regex: Regex): Rule[StringView] = {
+      Rule(in => regex.findPrefixOf(slice(pos(in), wholeSize).toString).map(x => Success(slice(pos(in), pos(in) + x.length), slice(pos(in) + x.length, wholeSize))).
+        getOrElse(Failure(Error(s"regex pattern '$regex' expected but ${slice(pos(in), pos(in) + 10)}.. found ", frames) :: Nil)))
+    }
+
+    implicit def Rule(categories: Categories): Rule[StringView] = Rule(categories.names.mkString("[\\p{", "}\\p{", "}]").r)
+
+    implicit def Rule(range: immutable.NumericRange.Inclusive[Char]): Rule[StringView] = Rule(("[" + new String(Character.toChars(range.start)) + "-" + new String(Character.toChars(range.end)) + "]").r)
   }
 }
