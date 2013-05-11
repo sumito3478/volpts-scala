@@ -30,24 +30,24 @@ object Build extends Build {
       "com.assembla.scala-incubator" %% "graph-dot" % "1.6.+",
       "org.scalanlp" %% "breeze-core" % "0.2.+",
       "org.ow2.asm" % "asm-all" % "4.+")).
-    dependsOn(parsing, util)
+    dependsOn(parsing, corelib)
 
   lazy val parsing = Project("volpts-parsing", file("parsing")).settings(
     libraryDependencies ++= Seq(
       "com.assembla.scala-incubator" %% "graph-dot" % "1.6.+",
       "org.scalanlp" %% "breeze-core" % "0.2.+",
       "org.ow2.asm" % "asm-all" % "4.+")).
-    dependsOn(meta, util)
+    dependsOn(meta, corelib)
 
   lazy val collection = Project("volpts-collection", file("collection")).settings(defaultSettings: _*).settings(
     libraryDependencies ++= Seq(
       "com.assembla.scala-incubator" %% "graph-core" % "1.6.+")).
-    dependsOn(meta, util)
+    dependsOn(meta, corelib)
 
   lazy val meta = Project("volpts-meta", file("meta")).settings(defaultSettings: _*).settings(
     libraryDependencies <++= scalaVersion(v => Seq(
       "org.scala-lang" % "scala-compiler" % v))).
-    dependsOn(util)
+    dependsOn(corelib)
 
-  lazy val util = Project("volpts-util", file("util")).settings(defaultSettings: _*)
+  lazy val corelib = Project("volpts-corelib", file("corelib")).settings(defaultSettings: _*)
 }
