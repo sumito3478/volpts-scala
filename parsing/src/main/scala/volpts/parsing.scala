@@ -27,6 +27,11 @@ package object parsing {
     def startsWith(self: Input, x: Input)(implicit __ : Dummy0.type): Boolean
 
     def startsWith(self: Input, x: Source)(implicit __ : Dummy1.type): Boolean
+
+    def concatenate(self: Input, that: Input): Input = {
+      require(until(self) == pos(that))
+      slice(pos(self), until(that))
+    }
   }
 
   trait Parser[Input, Source] {
