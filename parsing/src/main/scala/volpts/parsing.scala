@@ -128,6 +128,11 @@ package object parsing {
         case _: Failure => Success(None, in)
       })
 
+      def opt(implicit ev: A <:< Input) : NonStoppableRule[Input] = NonStoppableRule(in => this(in) match {
+        case Success(x1, in1) => Success(x1, in1)
+        case _: Failure => Success(slice(pos(in), pos(in)), in)
+      })
+
       def * : NonStoppableRule[List[A]] = NonStoppableRule(in => {
         @tailrec
         def loop(xs: List[A], in: Input): (List[A], Input) = this(in) match {
