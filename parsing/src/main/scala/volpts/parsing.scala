@@ -105,6 +105,14 @@ package object parsing {
         case f: Failure => f
       })
 
+      def ++(that: => Repr[Input])(implicit ev: A <:< Input): Repr[Input] = Repr(in => this(in) match {
+        case Success(x1, in1) => that(in1) match {
+          case Success(x2, in2) => Success(concatenate(x1, x2), in2)
+          case f: Failure => f
+        }
+        case f: Failure => f
+      })
+
       def &[B](that: => Repr[B]): Repr[B] = Repr(in => this(in) match {
         case Success(_, _) => that(in)
         case f: Failure => f
@@ -204,6 +212,14 @@ package object parsing {
         }
         case f: Failure => f
       })
+
+      def ++(that: => Rule[Input])(implicit ev: A <:< Input): Rule[Input] = Rule(in => this(in) match {
+        case Success(x1, in1) => that(in1) match {
+          case Success(x2, in2) => Success(concatenate(x1, x2), in2)
+          case f: Failure => f
+        }
+        case f: Failure => f
+      })
     }
 
     final case class Rule[+A](protected val f: Input => Result[A], name: String = "") extends RuleLike[A] {
@@ -244,6 +260,14 @@ package object parsing {
           Failure(Error(s"while parsing ${f.top.name}: unary_! failure", f) :: Nil)
         }
         case _: Failure => Success((), in)
+      })
+
+      def ++(that: => NonStoppableRule[Input])(implicit ev: A <:< Input): Rule[Input] = Rule(in => this(in) match {
+        case Success(x1, in1) => that(in1) match {
+          case Success(x2, in2) => Success(concatenate(x1, x2), in2)
+          case f: Failure => f
+        }
+        case f: Failure => f
       })
     }
 
