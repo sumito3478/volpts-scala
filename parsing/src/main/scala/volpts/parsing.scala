@@ -190,6 +190,14 @@ package object parsing {
         if (size(xs) == n) Success(xs, in2)
         else f
       })
+
+      def followed[B](that: Repr[B]): Repr[A] = Repr(in => this(in) match {
+        case Success(x1, in1) => that(in1) match {
+          case Success(x2, in2) => Success(x1, in2)
+          case f: Failure => f
+        }
+        case f: Failure => f
+      })
     }
 
     final case class NonStoppableRule[+A](protected val f: Input => Result[A], name: String = "") extends RuleLike[A] {
@@ -225,6 +233,10 @@ package object parsing {
         }
         case f: Failure => f
       })
+
+      def followed[B](that: Rule[B]): Rule[A] = this.~[B](that) ^^ {
+        case x *** _ => x
+      }
     }
 
     final case class Rule[+A](protected val f: Input => Result[A], name: String = "") extends RuleLike[A] {
@@ -274,6 +286,10 @@ package object parsing {
         }
         case f: Failure => f
       })
+
+      def followed[B](that: NonStoppableRule[B]): Rule[A] = this.~[B](that) ^^ {
+        case x *** _ => x
+      }
     }
 
     import meta._
