@@ -72,8 +72,19 @@ package object parsing {
 
       private[this] lazy val cache = new MutableArrayMap[Result[A]](wholeSize)
 
+      private[this] val recursion = new mutable.Stack[Int]
+
+      private[this] def ruleFrame(in: Input)(f: => Result[A]): Result[A] = if(recursion.contains(pos(in))) Failure(Error(s"recursion of $name", frames) :: Nil)
+        else {
+          recursion.push(pos(in))
+          try f
+          finally recursion.pop
+        }
+
       def apply(in: Input): Result[A] = frame(Frame(name, in)){
-        cache.getOrElseUpdate(pos(in), f(in))
+        ruleFrame(in) {
+          cache.getOrElseUpdate(pos(in), f(in))
+        }
       }
 
       protected[this] def Repr[B](f: Input => Result[B]): Repr[B]
