@@ -348,6 +348,11 @@ package object parsing {
 
     implicit def Rule(categories: Categories): Rule[StringView] = Rule(categories.names.mkString("[\\p{", "}\\p{", "}]").r)
 
-    implicit def Rule(range: immutable.NumericRange.Inclusive[Char]): Rule[StringView] = Rule(("[" + new String(Character.toChars(range.start)) + "-" + new String(Character.toChars(range.end)) + "]").r)
+    implicit def Rule(range: immutable.NumericRange.Inclusive[Char]): Rule[StringView] = Rule(in => {
+        val char = slice(in, 0, 1)
+        val c = char.charAt(1)
+        if(range.contains(c)) Success(char, slice(in, 1, wholeSize))
+        else Failure(Error(s"Unicode character in the range from ${range.start} to ${range.end} expected, but $c found", frames) :: Nil)
+      })
   }
 }
