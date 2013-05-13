@@ -13,6 +13,18 @@ package object ast {
 
   case class Tuple(exprs: List[Expr])
 
+  sealed trait Literal extends Expr
+
+  case class StringLiteral(value: String) extends Literal
+
+  case class Int32Literal(value: Int) extends Literal
+
+  case class Int64Literal(value: Long) extends Literal
+
+  case class DoubleLiteral(value: Double) extends Literal
+
+  case class BooleanLiteral(value: Boolean) extends Literal
+
   sealed trait Pat
 
   case class PTuple(pats: List[Pat]) extends Pat
