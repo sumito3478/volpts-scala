@@ -5,6 +5,7 @@ package object syntax {
   import parsing._
   import collection._
   import util._
+  import ast._
 
   trait VolptsTokenizer extends StringParser {
     import inputOps._
@@ -31,13 +32,28 @@ package object syntax {
 
     lazy val id: Rule[StringView] = plainid / (Rule("`") ++ any.repeat ++ "`")
 
-    lazy val decimalNumeral = decimalDigit.repeat1
+    lazy val decimalLiteral = decimalDigit.repeat1 ~ ("L" / "l").? ^^ {
+      case x *** suffix => suffix match {
+        case Some(_) => Int64Literal(java.lang.Long.parseLong(x.toString, 10))
+        case None => Int32Literal(java.lang.Integer.parseInt(x.toString, 10))
+      }
+    }
 
-    lazy val hexNumeral = "0x" ~ hexDigit.repeat1
+    lazy val hexLiteral = "0x" ~ hexDigit.repeat1 ~ ("L" / "l").? ^^ {
+      case _ *** x *** suffix => suffix match {
+        case Some(_) => Int64Literal(java.lang.Long.parseLong(x.toString, 16))
+        case None => Int32Literal(java.lang.Integer.parseInt(x.toString, 16))
+      }
+    }
 
-    lazy val binaryNumeral = "0b" ~ binaryDigit.repeat1
+    lazy val binaryLiteral = "0b" ~ binaryDigit.repeat1 ~ ("L" / "l").? ^^ {
+      case _ *** x *** suffix => suffix match {
+        case Some(_) => Int64Literal(java.lang.Long.parseLong(x.toString, 2))
+        case None => Int32Literal(java.lang.Integer.parseInt(x.toString, 2))
+      }
+    }
 
-    lazy val integerLiteral = (decimalNumeral / hexNumeral / binaryNumeral) ~ ("L" / "l").?
+    lazy val integerLiteral = binaryLiteral / hexLiteral / decimalLiteral
 
     lazy val hexDigit = ('0' to '9') / ('A' to 'F') / ('a' to 'f')
 
@@ -50,9 +66,9 @@ package object syntax {
     lazy val floatingPointLiteral = (decimalDigit.repeat1 ++ "." ++ decimalDigit.repeat ++ exponentPart.opt ++ floatType.opt) /
       (Rule(".") ++ decimalDigit.repeat1 ++ exponentPart.opt ++ floatType.opt) /
       (decimalDigit.repeat1 ++ exponentPart ++ floatType.opt) /
-      (decimalDigit.repeat1 ++ exponentPart.opt ++ floatType)
+      (decimalDigit.repeat1 ++ exponentPart.opt ++ floatType) ^^ (x => DoubleLiteral(java.lang.Double.parseDouble(x)))
 
-    lazy val booleanLiteral = "true" / "false"
+    lazy val booleanLiteral = "true" / "false" ^^ (x => BooleanLiteral(java.lang.Boolean.parseBoolean(x.toString)))
 
     lazy val unicodeEscapeSequence: Rule[String] = "\\u" ~ hexDigit.repeat1 ~ ";" ^^ {
       case _ *** x *** _ => new String(Character.toChars(java.lang.Integer.parseInt(x.toString, 16)))
