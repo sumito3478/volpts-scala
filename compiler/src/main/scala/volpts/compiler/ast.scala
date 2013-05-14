@@ -13,7 +13,7 @@ package object ast {
 
   case class Lambda(pats: List[Pat], expr: Expr) extends Expr
 
-  case class Tuple(exprs: List[Expr])
+  case class Tuple(exprs: List[Expr]) extends Expr
 
   sealed trait Literal extends Expr
 
