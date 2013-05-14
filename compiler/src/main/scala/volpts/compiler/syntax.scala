@@ -32,24 +32,24 @@ package object syntax {
 
     lazy val id: Rule[StringView] = plainid / (Rule("`") ++ any.repeat ++ "`")
 
-    lazy val decimalLiteral = decimalDigit.repeat1 ~ ("L" / "l").? ^^ {
-      case x *** suffix => suffix match {
-        case Some(_) => Int64Literal(java.lang.Long.parseLong(x.toString, 10))
-        case None => Int32Literal(java.lang.Integer.parseInt(x.toString, 10))
+    lazy val decimalLiteral = "-".opt ~ decimalDigit.repeat1 ~ ("L" / "l").? ^^ {
+      case sign *** x *** suffix => suffix match {
+        case Some(_) => Int64Literal(java.lang.Long.parseLong(sign.toString + x.toString, 10))
+        case None => Int32Literal(java.lang.Integer.parseInt(sign.toString + x.toString, 10))
       }
     }
 
-    lazy val hexLiteral = "0x" ~ hexDigit.repeat1 ~ ("L" / "l").? ^^ {
-      case _ *** x *** suffix => suffix match {
-        case Some(_) => Int64Literal(java.lang.Long.parseLong(x.toString, 16))
-        case None => Int32Literal(java.lang.Integer.parseInt(x.toString, 16))
+    lazy val hexLiteral = "-".opt ~ "0x" ~ hexDigit.repeat1 ~ ("L" / "l").? ^^ {
+      case sign *** _ *** x *** suffix => suffix match {
+        case Some(_) => Int64Literal(java.lang.Long.parseLong(sign.toString + x.toString, 16))
+        case None => Int32Literal(java.lang.Integer.parseInt(sign.toString + x.toString, 16))
       }
     }
 
-    lazy val binaryLiteral = "0b" ~ binaryDigit.repeat1 ~ ("L" / "l").? ^^ {
-      case _ *** x *** suffix => suffix match {
-        case Some(_) => Int64Literal(java.lang.Long.parseLong(x.toString, 2))
-        case None => Int32Literal(java.lang.Integer.parseInt(x.toString, 2))
+    lazy val binaryLiteral = "-".opt ~ "0b" ~ binaryDigit.repeat1 ~ ("L" / "l").? ^^ {
+      case sign *** _ *** x *** suffix => suffix match {
+        case Some(_) => Int64Literal(java.lang.Long.parseLong(sign.toString + x.toString, 2))
+        case None => Int32Literal(java.lang.Integer.parseInt(sign.toString + x.toString, 2))
       }
     }
 
@@ -63,10 +63,10 @@ package object syntax {
 
     lazy val floatType: Rule[StringView] = "F" / "f" / "D" / "d"
 
-    lazy val floatingPointLiteral = (decimalDigit.repeat1 ++ "." ++ decimalDigit.repeat ++ exponentPart.opt ++ floatType.opt) /
-      (Rule(".") ++ decimalDigit.repeat1 ++ exponentPart.opt ++ floatType.opt) /
-      (decimalDigit.repeat1 ++ exponentPart ++ floatType.opt) /
-      (decimalDigit.repeat1 ++ exponentPart.opt ++ floatType) ^^ (x => DoubleLiteral(java.lang.Double.parseDouble(x)))
+    lazy val floatingPointLiteral = ("-".opt ++ decimalDigit.repeat1 ++ "." ++ decimalDigit.repeat ++ exponentPart.opt ++ floatType.opt) /
+      ("-".opt ++ Rule(".") ++ decimalDigit.repeat1 ++ exponentPart.opt ++ floatType.opt) /
+      ("-".opt ++ decimalDigit.repeat1 ++ exponentPart ++ floatType.opt) /
+      ("-".opt ++ decimalDigit.repeat1 ++ exponentPart.opt ++ floatType) ^^ (x => DoubleLiteral(java.lang.Double.parseDouble(x)))
 
     lazy val booleanLiteral = "true" / "false" ^^ (x => BooleanLiteral(java.lang.Boolean.parseBoolean(x.toString)))
 
