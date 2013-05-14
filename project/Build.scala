@@ -23,7 +23,7 @@ object Build extends Build {
       "com.chuusai" %% "shapeless" % "1.2.+",
       "org.scalatest" %% "scalatest" % "2.0.+" % "test"))
 
-  lazy val obs = Project("volpts", file(".")).settings(defaultSettings: _*).aggregate(
+  lazy val volpts = Project("volpts", file(".")).settings(defaultSettings: _*).aggregate(
     corelib, meta, collection, parsing, compiler)
 
   lazy val compiler = Project("volpts-compiler", file("compiler")).settings(defaultSettings: _*).settings(
