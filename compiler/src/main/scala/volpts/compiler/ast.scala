@@ -44,4 +44,12 @@ package object ast {
   case class LiteralPattern(literal: Literal) extends Pat
 
   case object WildCardPattern extends Pat
+
+  sealed trait Statement
+
+  case class ExprStatement(expr: Expr) extends Statement
+
+  case class PatternStatement(pat: Pat, expr: Expr) extends Statement
+
+  case class LetStatement(binding: Binding, expr: Expr) extends Statement
 }
