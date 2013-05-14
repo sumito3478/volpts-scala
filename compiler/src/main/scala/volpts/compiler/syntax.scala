@@ -101,5 +101,17 @@ package object syntax {
     lazy val let_# = Rule("let")
 
     lazy val =# = Rule("=")
+
+    implicit class TokenizerRule[A](val self: Rule[A]) {
+      def s = self followed space
+
+      def ws = self followed whitespace
+    }
+
+    implicit class TokenizerNonStoppableRule[A](val self: NonStoppableRule[A]) {
+      def s = self followed space
+
+      def ws = self followed whitespace
+    }
   }
 }
