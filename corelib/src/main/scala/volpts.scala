@@ -12,4 +12,8 @@ package object volpts {
   implicit object Dummy2 extends (__ --- __ --- __ --- __)
 
   implicit object Dummy3 extends (__ --- __ --- __ --- __ --- __)
+
+  implicit class AnyW[A](val self: A) {
+    def ###[B](that: B): A ### B = volpts.###.apply(self, that)
+  }
 }

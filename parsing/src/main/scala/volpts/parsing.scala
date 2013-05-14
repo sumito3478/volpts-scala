@@ -97,9 +97,9 @@ package object parsing {
         }
       })
 
-      def ~[B](that: => Repr[B]): Repr[A *** B] = Repr(in => this(in) match {
+      def ~[B](that: => Repr[B]): Repr[A ### B] = Repr(in => this(in) match {
         case Success(x1, in1) => that(in1) match {
-          case Success(x2, in2) => Success(x1 *** x2, in2)
+          case Success(x2, in2) => Success(x1 ### x2, in2)
           case f: Failure => f
         }
         case f: Failure => f
@@ -218,9 +218,9 @@ package object parsing {
         case f: Failure => f
       })
 
-      def ~[B](that: => Rule[B]): Rule[A *** B] = Rule(in => this(in) match {
+      def ~[B](that: => Rule[B]): Rule[A ### B] = Rule(in => this(in) match {
         case Success(x1, in1) => that(in1) match {
-          case Success(x2, in2) => Success(x1 *** x2, in2)
+          case Success(x2, in2) => Success(x1 ### x2, in2)
           case f: Failure => f
         }
         case f: Failure => f
@@ -235,7 +235,7 @@ package object parsing {
       })
 
       def followed[B](that: Rule[B]): Rule[A] = this.~[B](that) ^^ {
-        case x *** _ => x
+        case x ### _ => x
       }
     }
 
@@ -252,9 +252,9 @@ package object parsing {
         }
       })
 
-      def ~[B](that: => NonStoppableRule[B]): Rule[A *** B] = Rule(in => this(in) match {
+      def ~[B](that: => NonStoppableRule[B]): Rule[A ### B] = Rule(in => this(in) match {
         case Success(x1, in1) => that(in1) match {
-          case Success(x2, in2) => Success(x1 *** x2, in2)
+          case Success(x2, in2) => Success(x1 ### x2, in2)
           case f: Failure => f
         }
         case f: Failure => f
@@ -288,7 +288,7 @@ package object parsing {
       })
 
       def followed[B](that: NonStoppableRule[B]): Rule[A] = this.~[B](that) ^^ {
-        case x *** _ => x
+        case x ### _ => x
       }
     }
 

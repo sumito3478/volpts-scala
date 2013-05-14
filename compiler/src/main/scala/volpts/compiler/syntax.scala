@@ -33,21 +33,21 @@ package object syntax {
     lazy val id: Rule[StringView] = plainid / (Rule("`") ++ any.repeat ++ "`")
 
     lazy val decimalLiteral = "-".opt ~ decimalDigit.repeat1 ~ ("L" / "l").? ^^ {
-      case sign *** x *** suffix => suffix match {
+      case sign ### x ### suffix => suffix match {
         case Some(_) => Int64Literal(java.lang.Long.parseLong(sign.toString + x.toString, 10))
         case None => Int32Literal(java.lang.Integer.parseInt(sign.toString + x.toString, 10))
       }
     }
 
     lazy val hexLiteral = "-".opt ~ "0x" ~ hexDigit.repeat1 ~ ("L" / "l").? ^^ {
-      case sign *** _ *** x *** suffix => suffix match {
+      case sign ### _ ### x ### suffix => suffix match {
         case Some(_) => Int64Literal(java.lang.Long.parseLong(sign.toString + x.toString, 16))
         case None => Int32Literal(java.lang.Integer.parseInt(sign.toString + x.toString, 16))
       }
     }
 
     lazy val binaryLiteral = "-".opt ~ "0b" ~ binaryDigit.repeat1 ~ ("L" / "l").? ^^ {
-      case sign *** _ *** x *** suffix => suffix match {
+      case sign ### _ ### x ### suffix => suffix match {
         case Some(_) => Int64Literal(java.lang.Long.parseLong(sign.toString + x.toString, 2))
         case None => Int32Literal(java.lang.Integer.parseInt(sign.toString + x.toString, 2))
       }
@@ -71,23 +71,23 @@ package object syntax {
     lazy val booleanLiteral = "true" / "false" ^^ (x => BooleanLiteral(java.lang.Boolean.parseBoolean(x.toString)))
 
     lazy val unicodeEscapeSequence: Rule[String] = "\\u" ~ hexDigit.repeat1 ~ ";" ^^ {
-      case _ *** x *** _ => new String(Character.toChars(java.lang.Integer.parseInt(x.toString, 16)))
+      case _ ### x ### _ => new String(Character.toChars(java.lang.Integer.parseInt(x.toString, 16)))
     }
 
     lazy val stringLiteralPart: Rule[String] = unicodeEscapeSequence / ((! "\"") & any.repeat1 ^^ (_.toString))
 
-    lazy val stringLiteral: Rule[String] = "\"" ~ stringLiteralPart.* ~ "\"" ^^ {
-      case _ *** xs *** _ => xs.mkString
+    lazy val stringLiteral: Rule[StringLiteral] = "\"" ~ stringLiteralPart.* ~ "\"" ^^ {
+      case _ ### xs ### _ => StringLiteral(xs.mkString)
     }
 
     lazy val nl = "\r\n" / "\n" / "\r" / "\u2028" / "\u2029" / "\u0085"
 
     lazy val singleLineComment = "//" ~ ((! nl) & any.repeat) ~ nl.? ^^ {
-      case _ *** xs *** _ => xs.toString
+      case _ ### xs ### _ => xs.toString
     }
 
     lazy val multiLineComment = "/*" ~ ((!"*/") & any.repeat) ~ "*/" ^^ {
-      case _ *** xs *** _ => xs.toString
+      case _ ### xs ### _ => xs.toString
     }
 
     lazy val comment = singleLineComment / multiLineComment
