@@ -35,5 +35,11 @@ package object ast {
 
   sealed trait Pat
 
-  case class PTuple(pats: List[Pat]) extends Pat
+  case class TuplePattern(pats: List[Pat]) extends Pat
+
+  case class AsPattern(id: QualifiedId, pat: Pat) extends Pat
+
+  case class VarPattern(id: QualifiedId) extends Pat
+
+  case class LiteralPattern(literal: Literal) extends Pat
 }
