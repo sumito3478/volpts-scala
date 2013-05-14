@@ -3,7 +3,9 @@ package volpts.compiler
 package object ast {
   sealed trait Expr
 
-  sealed trait Identifier extends Expr
+  case class Identifier(name: String) extends Expr
+
+  case class QualifiedId(ids: List[Identifier]) extends Expr
 
   case class Paren(exp: Expr) extends Expr
 
