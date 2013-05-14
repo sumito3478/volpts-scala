@@ -27,7 +27,7 @@ package object ast {
 
   case class BooleanLiteral(value: Boolean) extends Literal
 
-  case class Binding(pats: List[Pat], expr: Expr)
+  case class Binding(pats: Pat, expr: Expr)
 
   case class Let(binding: Binding, expr: Expr) extends Expr
 
