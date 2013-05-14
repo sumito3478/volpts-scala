@@ -97,5 +97,9 @@ package object syntax {
     lazy val whitespace = space / nl
 
     lazy val semi: Rule[Unit] = ";" / (nl ~ space.*).+ ~ space.* ^^ (_ => ())
+
+    lazy val let_# = Rule("let")
+
+    lazy val =# = Rule("=")
   }
 }
