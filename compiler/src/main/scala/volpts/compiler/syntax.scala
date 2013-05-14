@@ -66,7 +66,7 @@ package object syntax {
     lazy val floatingPointLiteral = ("-".opt ++ decimalDigit.repeat1 ++ "." ++ decimalDigit.repeat ++ exponentPart.opt ++ floatType.opt) /
       ("-".opt ++ Rule(".") ++ decimalDigit.repeat1 ++ exponentPart.opt ++ floatType.opt) /
       ("-".opt ++ decimalDigit.repeat1 ++ exponentPart ++ floatType.opt) /
-      ("-".opt ++ decimalDigit.repeat1 ++ exponentPart.opt ++ floatType) ^^ (x => DoubleLiteral(java.lang.Double.parseDouble(x)))
+      ("-".opt ++ decimalDigit.repeat1 ++ exponentPart.opt ++ floatType) ^^ (x => DoubleLiteral(java.lang.Double.parseDouble(x.toString)))
 
     lazy val booleanLiteral = "true" / "false" ^^ (x => BooleanLiteral(java.lang.Boolean.parseBoolean(x.toString)))
 
