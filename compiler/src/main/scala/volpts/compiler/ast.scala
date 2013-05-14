@@ -42,4 +42,6 @@ package object ast {
   case class VarPattern(id: QualifiedId) extends Pat
 
   case class LiteralPattern(literal: Literal) extends Pat
+
+  case object WildCardPattern extends Pat
 }
