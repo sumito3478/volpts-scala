@@ -37,9 +37,9 @@ package object parsing {
   trait Parser[Input, Source] {
     parser =>
 
-    val inputOp: InputData[Input, Source]
+    val inputOps: InputData[Input, Source]
 
-    import inputOp._
+    import inputOps._
 
     sealed trait Result[+A]
 
