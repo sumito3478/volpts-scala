@@ -106,7 +106,7 @@ package object collection {
 
     override def slice(from: Int, until: Int) = {
       require(from <= until, "from must be <= until")
-      StringView(src, this.from + from, this.from + this.until)
+      StringView(src, this.from + from, this.from + until)
     }
 
     override def toString = src.substring(from, until)
