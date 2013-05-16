@@ -393,10 +393,13 @@ package object parsing {
 
     import scala.util.matching.Regex
 
-    private[this] def Rule(regex: Regex): Rule[StringView] = {
-      Rule(in => regex.findPrefixOf(slice(pos(in), wholeSize).toString).map(x => Success(slice(pos(in), pos(in) + x.length), slice(pos(in) + x.length, wholeSize))).
-        getOrElse(Failure(Error(s"regex pattern '$regex' expected but ${slice(pos(in), pos(in) + 10)}.. found ", frames) :: Nil)))
-    }
+    private[this] def Rule(regex: Regex): Rule[StringView] = Rule(in => {
+      val successOption = for {
+        prefix <- regex.findPrefixOf(slice(pos(in)).toString)
+        success = Success(slice(pos(in), pos(in) + prefix.length), slice(pos(in) + prefix.length))
+      } yield(success)
+      successOption.getOrElse(Failure(Error(s"""regex pattern "$regex" expected but ${slice(pos(in), pos(in) + 10)} .. found""" , frames) :: Nil))
+    })
 
     implicit def Rule(categories: Categories): Rule[StringView] = Rule(categories.names.mkString("[\\p{", "}\\p{", "}]").r)
 
