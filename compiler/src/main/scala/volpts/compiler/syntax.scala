@@ -102,6 +102,10 @@ package object syntax {
 
     lazy val =# = Rule("=")
 
+    lazy val rec_# = Rule("rec")
+
+    lazy val comma_# = Rule(",")
+
     implicit class TokenizerRule[A](val self: Rule[A]) {
       def s = self followed space
 
@@ -113,5 +117,27 @@ package object syntax {
 
       def ws = self followed whitespace
     }
+  }
+
+  trait VolptsParser extends VolptsTokenizer {
+    lazy val literal: Rule[Literal] = integerLiteral / floatingPointLiteral / booleanLiteral / stringLiteral
+
+    lazy val expr: Rule[Expr] = letExpr
+
+    lazy val letExpr: Rule[Let] = rule(RuleValWithName(let_#.ws ~ pat.ws ~ =#.ws ~ expr.s ~ semi ~ expr ^^ {
+      case _ ### pat ### _ ### expr1 ### _ ### expr2 => {
+        Let(Binding(pat, expr1), expr2)
+      }
+    }))
+
+    lazy val letRecExpr = rule(let_#.ws ~ rec_#.ws ~ pat.ws ~ =#.ws ~ expr.s ~ semi ~ expr ^^ {
+      case _ ### _ ### pat ### _ ### expr1 ### _ ### expr2  => {
+        LetRec(Binding(pat, expr1), expr2)
+      }
+    })
+
+    lazy val tupleExpr = rule(expr.sep(comma_#.ws))
+
+    lazy val pat: Rule[Pat] = ???
   }
 }

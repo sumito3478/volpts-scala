@@ -102,7 +102,7 @@ package object parsing {
 
       type Repr[+A] <: RuleLike[A]
 
-      private[this] lazy val cache = new MutableArrayMap[Result[A]](wholeSize)
+      private[this] lazy val cache = new MutableArrayMap[Result[A]](wholeSize + 1)
 
       private[this] val recursion = new mutable.Stack[Int]
 
@@ -230,6 +230,22 @@ package object parsing {
         }
         case f: Failure => f
       })
+
+      def sep[B](sep: Repr[B]): Repr[List[A]] = Repr(in => this(in) match {
+        case Success(x1, in1) => {
+          @tailrec
+          def loop(in: Input, l: List[A]): (Input, List[A]) = sep(in) match {
+            case Success(_, in2) => this(in2) match {
+              case Success(x3, in3) => loop(in3, x3 :: l)
+              case _: Failure => (in, l)
+            }
+            case _: Failure => (in, l)
+          }
+          val (in4, l) = loop(in1, Nil)
+          Success(x1 :: l.reverse, in4)
+        }
+        case f: Failure => f
+      })
     }
 
     final case class NonStoppableRule[+A](protected val f: Input => Result[A], name: String = "") extends RuleLike[A] {
@@ -343,9 +359,9 @@ package object parsing {
   }
 
   case class StringInputData(src: String) extends InputData[StringView, String] {
-    def slice(from: Int, until: Int): StringView = StringView(src, from, until)
+    def slice(from: Int, until: Int): StringView = StringView(src, from, math.min(src.length, until))
 
-    def slice(self: StringView, from: Int, until: Int): StringView = self.slice(from, until)
+    def slice(self: StringView, from: Int, until: Int): StringView = self.slice(from, math.min(src.length, until))
 
     def size(self: StringView)(implicit __ : Dummy0.type): Int = self.size
 
@@ -382,9 +398,10 @@ package object parsing {
 
     implicit def Rule(range: immutable.NumericRange.Inclusive[Char]): Rule[StringView] = Rule(in => {
         val char = slice(in, 0, 1)
-        val c = char.charAt(1)
-        if(range.contains(c)) Success(char, slice(in, 1, wholeSize))
-        else Failure(Error(s"Unicode character in the range from ${range.start} to ${range.end} expected, but $c found", frames) :: Nil)
+      (for {
+          c <- char.headOption
+          ret = Success(char, slice(in, 1, wholeSize)) if range.contains(c)
+        } yield(ret)).getOrElse(Failure(Error(s"Unicode character in the range from ${range.start} to ${range.end} expected, but ${char.headOption.getOrElse("<no char>")} found", frames) :: Nil))
       })
   }
 }

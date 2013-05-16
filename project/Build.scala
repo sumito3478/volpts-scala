@@ -33,7 +33,7 @@ object Build extends Build {
       "org.ow2.asm" % "asm-all" % "4.+")).
     dependsOn(parsing, corelib)
 
-  lazy val parsing = Project("volpts-parsing", file("parsing")).settings(
+  lazy val parsing = Project("volpts-parsing", file("parsing")).settings(defaultSettings: _*).settings(
     libraryDependencies ++= Seq(
       "com.assembla.scala-incubator" %% "graph-dot" % "1.6.+",
       "org.scalanlp" %% "breeze-core" % "0.2.+",
