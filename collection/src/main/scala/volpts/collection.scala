@@ -96,13 +96,26 @@ package object collection {
     override def empty = new MutableArrayMap[A](size)
   }
 
-  case class StringView(src: String, from: Int, until: Int) extends IndexedSeq[Char] {
-    def apply(idx: Int) = src.charAt(from + idx)
+  case class StringView private (src: String, from: Int, until: Int, dummy0: Dummy0) extends IndexedSeq[Char] {
+    def apply(idx: Int) = {
+      require(0 <= idx && idx < length, "index out of bounds")
+      src.charAt(from + idx)
+    }
 
     def length: Int = until - from
 
-    override def slice(from: Int, until: Int) = StringView(src, math.min(src.length, this.from + from) , math.min(src.length, this.from + until))
+    override def slice(from: Int, until: Int) = {
+      require(from <= until, "from must be <= until")
+      StringView(src, this.from + from, this.from + this.until)
+    }
 
     override def toString = src.substring(from, until)
+  }
+
+  object StringView {
+    def apply(src: String, from: Int, until: Int): StringView = {
+      require(from <= until, "from must be <= until")
+      StringView(src, math.min(src.length, from), math.min(src.length, until), dummy0)
+    }
   }
 }

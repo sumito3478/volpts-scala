@@ -343,13 +343,13 @@ package object parsing {
   }
 
   case class StringInputData(src: String) extends InputData[StringView, String] {
-    def slice(from: Int, until: Int): StringView = StringView(src, from, until)
+    def slice(from: Int, until: Int): StringView = StringView(src, from, math.min(src.length, until))
 
-    def slice(self: StringView, from: Int, until: Int): StringView = self.slice(from, until)
+    def slice(self: StringView, from: Int, until: Int): StringView = self.slice(from, math.min(src.length, until))
 
-    def size(self: StringView)(implicit __ : Dummy0.type): Int = self.size
+    def size(self: StringView)(implicit dummy0 : Dummy0): Int = self.size
 
-    def size(self: String)(implicit __ : Dummy1.type): Int = self.length
+    def size(self: String)(implicit dummy1 : Dummy1): Int = self.length
 
     def wholeSize: Int = src.length
 
@@ -357,9 +357,9 @@ package object parsing {
 
     def until(self: StringView): Int = self.until
 
-    def startsWith(self: StringView, x: StringView)(implicit __ : Dummy0.type): Boolean = self.startsWith(x)
+    def startsWith(self: StringView, x: StringView)(implicit dummy0 : Dummy0): Boolean = self.startsWith(x)
 
-    def startsWith(self: StringView, x: String)(implicit __ : Dummy1.type): Boolean = self.startsWith(x)
+    def startsWith(self: StringView, x: String)(implicit dummy1 : Dummy1): Boolean = self.startsWith(x)
   }
 
   trait StringParser extends Parser[StringView, String] {
