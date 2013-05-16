@@ -14,9 +14,9 @@ package object parsing {
 
     def slice(self: Input, from: Int, until: Int): Input
 
-    def size(self: Input)(implicit __ : Dummy0.type): Int
+    def size(self: Input)(implicit dummy0 : Dummy0): Int
 
-    def size(self: Source)(implicit __ : Dummy1.type): Int
+    def size(self: Source)(implicit dummy0 : Dummy1): Int
 
     def wholeSize: Int
 
@@ -24,9 +24,9 @@ package object parsing {
 
     def until(self: Input): Int
 
-    def startsWith(self: Input, x: Input)(implicit __ : Dummy0.type): Boolean
+    def startsWith(self: Input, x: Input)(implicit dummy0 : Dummy0): Boolean
 
-    def startsWith(self: Input, x: Source)(implicit __ : Dummy1.type): Boolean
+    def startsWith(self: Input, x: Source)(implicit dummy1 : Dummy1): Boolean
 
     def concatenate(self: Input, that: Input): Input = {
       require(until(self) == pos(that))
