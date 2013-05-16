@@ -12,7 +12,11 @@ package object parsing {
   trait InputData[Input, Source] {
     def slice(from: Int, until: Int): Input
 
+    def slice(from: Int): Input
+
     def slice(self: Input, from: Int, until: Int): Input
+
+    def slice(self: Input, from: Int): Input
 
     def size(self: Input)(implicit dummy0 : Dummy0): Int
 
@@ -350,7 +354,7 @@ package object parsing {
     def rule[A](valWithName: ValWithName[Rule[A]]): Rule[A] = macro valDefWithName[Rule[A]]
 
     def inputRule(param: Source): Rule[Input] = Rule(in =>
-      if(startsWith(in, param)) Success(slice(in, 0, size(param)), slice(in, size(param), size(in)))
+      if(startsWith(in, param)) Success(slice(in, 0, size(param)), slice(in, size(param)))
       else Failure(Error(s"expected: $param actual: ${slice(in, 0, 10)}", frames) :: Nil))
 
     lazy val any: Rule[Input] = Rule(in =>
@@ -407,7 +411,7 @@ package object parsing {
         val char = slice(in, 0, 1)
         val successOption = for {
           c <- char.headOption
-          ret = Success(char, slice(in, 1, wholeSize)) if range.contains(c)
+          ret = Success(char, slice(in, 1)) if range.contains(c)
         } yield(ret)
         successOption.getOrElse(Failure(Error(s"Unicode character in the range from ${range.start} to ${range.end} expected, but ${char.headOption.getOrElse("EOF")} found", frames) :: Nil))
       })
