@@ -230,6 +230,22 @@ package object parsing {
         }
         case f: Failure => f
       })
+
+      def sep[B](sep: Repr[B]): Repr[List[A]] = Repr(in => this(in) match {
+        case Success(x1, in1) => {
+          @tailrec
+          def loop(in: Input, l: List[A]): (Input, List[A]) = sep(in) match {
+            case Success(_, in2) => this(in2) match {
+              case Success(x3, in3) => loop(in3, x3 :: l)
+              case _: Failure => (in, l)
+            }
+            case _: Failure => (in, l)
+          }
+          val (in4, l) = loop(in1, Nil)
+          Success(x1 :: l.reverse, in4)
+        }
+        case f: Failure => f
+      })
     }
 
     final case class NonStoppableRule[+A](protected val f: Input => Result[A], name: String = "") extends RuleLike[A] {
