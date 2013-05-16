@@ -41,7 +41,39 @@ package object parsing {
 
     import inputOps._
 
-    sealed trait Result[+A]
+    sealed trait Result[+A] {
+      self =>
+
+      def map[B](f: (A, Input) => (B, Input)): Result[B] = this match {
+        case Success(x, in) => (Success.apply[B] _).tupled(f(x, in))
+        case f: Failure => f
+      }
+
+      def flatMap[B](f: (A, Input) => Result[B]) = this match {
+        case Success(x, in) => f(x, in)
+        case f: Failure => f
+      }
+
+      def filter(p: A => Boolean): Result[A] = this match {
+        case Success(x, in) if(p(x)) => this
+        case Success(x, in) => Failure(Error("result filtered", frames) :: Nil)
+        case f: Failure => f
+      }
+
+      def foreach[U](f: A => U): Unit = this match {
+        case Success(x, in) => f(x)
+        case _: Failure => ()
+      }
+
+      class WithFilter(p: A => Boolean) {
+        def map[B](f: (A, Input) => (B, Input)) = self filter p map f
+        def flatMap[B](f: (A, Input) => Result[B]) = self filter p flatMap f
+        def foreach[U](f: A => U) = self filter p foreach f
+        def withFilter(q: A => Boolean) = new WithFilter(x => p(x) && q(x))
+      }
+
+      def withFilter(p: A => Boolean) = new WithFilter(p)
+    }
 
     case class Success[+A](x: A, in: Input) extends Result[A]
 
