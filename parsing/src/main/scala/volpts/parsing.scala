@@ -102,7 +102,7 @@ package object parsing {
 
       type Repr[+A] <: RuleLike[A]
 
-      private[this] lazy val cache = new MutableArrayMap[Result[A]](wholeSize)
+      private[this] lazy val cache = new MutableArrayMap[Result[A]](wholeSize + 1)
 
       private[this] val recursion = new mutable.Stack[Int]
 
@@ -343,9 +343,13 @@ package object parsing {
   }
 
   case class StringInputData(src: String) extends InputData[StringView, String] {
-    def slice(from: Int, until: Int): StringView = StringView(src, from, math.min(src.length, until))
+    def slice(from: Int, until: Int): StringView = StringView(src, from, until)
 
-    def slice(self: StringView, from: Int, until: Int): StringView = self.slice(from, math.min(src.length, until))
+    def slice(from: Int): StringView = StringView(src, from, wholeSize)
+
+    def slice(self: StringView, from: Int, until: Int): StringView = self.slice(from, until)
+
+    def slice(self: StringView, from: Int): StringView = self.slice(from, self.size)
 
     def size(self: StringView)(implicit dummy0 : Dummy0): Int = self.size
 
@@ -382,9 +386,11 @@ package object parsing {
 
     implicit def Rule(range: immutable.NumericRange.Inclusive[Char]): Rule[StringView] = Rule(in => {
         val char = slice(in, 0, 1)
-        val c = char.charAt(1)
-        if(range.contains(c)) Success(char, slice(in, 1, wholeSize))
-        else Failure(Error(s"Unicode character in the range from ${range.start} to ${range.end} expected, but $c found", frames) :: Nil)
+        val successOption = for {
+          c <- char.headOption
+          ret = Success(char, slice(in, 1, wholeSize)) if range.contains(c)
+        } yield(ret)
+        successOption.getOrElse(Failure(Error(s"Unicode character in the range from ${range.start} to ${range.end} expected, but ${char.headOption.getOrElse("EOF")} found", frames) :: Nil))
       })
   }
 }
