@@ -16,6 +16,7 @@ object Build extends Build {
       "-deprecation",
       "-unchecked"),
     resolvers ++= Seq(
+      "Typesafe Releases" at "http://repo.typesafe.com/typesafe/releases",
       "Typesafe Snapshots" at "http://repo.typesafe.com/typesafe/snapshots",
       "Sonatype OSS Releases" at "http://oss.sonatype.org/content/repositories/releases",
       "Sonatype OSS Snapshots" at "http://oss.sonatype.org/content/repositories/snapshots"),
