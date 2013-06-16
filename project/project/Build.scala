@@ -9,6 +9,8 @@ object Plugin extends Build {
 
   lazy val genIdea = uri("git://github.com/mpeltonen/sbt-idea.git#sbt-0.13")
 
+  lazy val sbtAntlr = uri("git://github.com/sumito3478/sbt-antlr.git#managed-source-dirs-fix")
+
   // sbteclipse 2.x does not support sbt 0.13, and sbteclipse 3.x is for sbt 0.13, but not ready for production use yet.
   // lazy val sbtelipse = ...
 }
