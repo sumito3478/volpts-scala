@@ -27,7 +27,7 @@ object Build extends Build {
   lazy val volpts = Project("volpts", file(".")).settings(defaultSettings: _*).aggregate(
     corelib, meta, collection, parsing, compiler)
 
-  lazy val compiler = Project("volpts-compiler", file("compiler")).settings(defaultSettings: _*).settings(
+  lazy val compiler = Project("volpts-compiler", file("compiler")).settings(defaultSettings: _*).settings(sbtantlr.SbtAntlrPlugin.antlrSettings: _*).settings(
     libraryDependencies ++= Seq(
       "com.ibm.icu" % "icu4j" % "51.1",
       "com.assembla.scala-incubator" %% "graph-dot" % "1.6.+",

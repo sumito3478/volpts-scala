@@ -3,7 +3,7 @@ import sbt._
 object Plugin extends Build {
   override lazy val projects = Seq(plugins)
 
-  lazy val plugins = Project("plugins", file(".")).dependsOn(ensime, genIdea)
+  lazy val plugins = Project("plugins", file(".")).dependsOn(ensime, genIdea, sbtAntlr)
 
   lazy val ensime = uri("git://github.com/4e6/ensime-sbt-cmd.git#0.13.0-M1")
 
