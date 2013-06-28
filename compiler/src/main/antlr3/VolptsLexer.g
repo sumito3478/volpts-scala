@@ -33,6 +33,7 @@ TYPE : 'type' ;
 TRUE : 'true';
 FALSE : 'false' ;
 IMPORT : 'import' ;
+AS : 'as' ;
 
 fragment IdentifierStart : UnicodeCategoryLl | UnicodeCategoryLu | UnicodeCategoryLt | UnicodeCategoryLo | UnicodeCategoryNl ;
 
