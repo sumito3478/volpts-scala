@@ -29,7 +29,6 @@ object Build extends Build {
 
   lazy val compiler = Project("volpts-compiler", file("compiler")).settings(defaultSettings: _*).settings(sbtantlr.SbtAntlrPlugin.antlrSettings: _*).settings(
     libraryDependencies ++= Seq(
-      "com.ibm.icu" % "icu4j" % "51.1",
       "com.assembla.scala-incubator" %% "graph-dot" % "1.6.+",
       "org.scalanlp" %% "breeze-core" % "0.2.+",
       "org.ow2.asm" % "asm-all" % "4.+")).
@@ -52,5 +51,10 @@ object Build extends Build {
       "org.scala-lang" % "scala-compiler" % v))).
     dependsOn(corelib)
 
-  lazy val corelib = Project("volpts-corelib", file("corelib")).settings(defaultSettings: _*)
+  lazy val corelib = Project("volpts-corelib", file("corelib")).settings(defaultSettings: _*).settings(
+    libraryDependencies ++= Seq(
+      "com.github.scala-incubator.io" %% "scala-io-core" % "0.4.+",
+      "com.github.scala-incubator.io" %% "scala-io-file" % "0.4.+",
+      "com.ibm.icu" % "icu4j" % "51.1",
+      "com.google.guava" % "guava" % "14.+"))
 }
