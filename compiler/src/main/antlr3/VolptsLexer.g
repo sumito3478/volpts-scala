@@ -8,7 +8,7 @@ import VolptsDef;
 
 fragment NewLineChar : '\u000D' | '\u000A' | '\u0085' | '\u2028' | '\u2029';
 
-SINGLE_LINE_COMMENT : '//' NewLineChar* { $channel = HIDDEN; } ;
+SINGLE_LINE_COMMENT : '//' (~ NewLineChar*) { $channel = HIDDEN; } ;
 
 fragment Space : '\u0009' | '\u000B' | '\u000C' | '\u0020' | '\u1680' | '\u180E' | '\u2000'..'\u200A' | '\u202F' | '\u205F' | '\u3000';
 
