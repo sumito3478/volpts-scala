@@ -29,6 +29,7 @@ object Build extends Build {
 
   lazy val compiler = Project("volpts-compiler", file("compiler")).settings(defaultSettings: _*).settings(
     libraryDependencies ++= Seq(
+      "com.ibm.icu" % "icu4j" % "51.1",
       "com.assembla.scala-incubator" %% "graph-dot" % "1.6.+",
       "org.scalanlp" %% "breeze-core" % "0.2.+",
       "org.ow2.asm" % "asm-all" % "4.+")).
