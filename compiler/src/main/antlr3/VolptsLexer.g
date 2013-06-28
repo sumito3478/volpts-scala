@@ -3,7 +3,7 @@ lexer grammar VolptsLexer;
 import VolptsDef;
 
 @header {
-  package volpts.compiler.lexer;
+  package volpts.compiler.antlr;
 }
 
 fragment NewLineChar : '\u000D' | '\u000A' | '\u0085' | '\u2028' | '\u2029';
