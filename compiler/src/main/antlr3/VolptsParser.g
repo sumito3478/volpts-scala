@@ -24,9 +24,7 @@ type_args : LBRACKET (type_generic EQUAL)? type (COMMA (type_generic EQUAL)? typ
 
 type_app : qual_id type_args? ;
 
-type_part : LPAREN type (COMMA type)* RPAREN ;
-
-type : type_part (ARROW type_part)* | type_app | type_generic ;
+type : LPAREN type (COMMA type)* RPAREN ARROW type | type_app | type_generic ;
 
 type_params : LBRACKET type_generic RBRACKET ;
 
