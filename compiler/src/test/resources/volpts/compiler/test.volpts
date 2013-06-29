@@ -59,9 +59,12 @@ val main: array[string] -> unit = args ->
   let h = match f {
     case tuple2(a, b) => a
   }
+  let i = a
+  let j = b
   let k = {
     "a"
   }
+  let l = (a, b) -> a
   import volpts.logger
   let t: some = some(f)
   logger.info(d)
