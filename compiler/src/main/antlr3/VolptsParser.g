@@ -84,7 +84,7 @@ if_expr : IF LPAREN expr RPAREN expr ELSE expr ;
 
 compound_expr : LCBRACKET (expr semi)+ RCBRACKET ;
 
-expr : lambda_expr | tuple_expr | app_expr | match_expr | compound_expr | let_rec_expr | let_expr | qual_id | literal | if_expr | data_expr | val_expr | import_expr ;
+expr : lambda_expr | tuple_expr | app_expr | match_expr | compound_expr | let_rec_expr | let_expr | qual_id | literal | if_expr | type_expr | import_expr ;
 
 ident_pat : ID type_annot?;
 
