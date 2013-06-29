@@ -1,55 +1,45 @@
 package volpts.compiler
+package ast
 
-package object ast {
-  sealed trait Expr
+sealed trait Node
 
-  case class Identifier(name: String) extends Expr
+case class CompilationUnit(decls: Decl) extends Node
 
-  case class QualifiedId(ids: List[Identifier]) extends Expr
+sealed trait Type
 
-  case class Paren(exp: Expr) extends Expr
+case class TypeGeneric(name: String) extends Type
 
-  case class App(fun: Expr, arg: Expr) extends Expr
+case class TypeApp(id: QualId, args: List[Type]) extends Type
 
-  case class Lambda(pats: List[Pat], expr: Expr) extends Expr
+case class TypeFun(params: List[Type], ret: Type) extends Type
 
-  case class Tuple(exprs: List[Expr]) extends Expr
+sealed trait TypeDef
 
-  sealed trait Literal extends Expr
+sealed trait VariantPart
 
-  case class StringLiteral(value: String) extends Literal
+case class ADTPart(id: String, ty: Type) extends VariantPart
 
-  case class Int32Literal(value: Int) extends Literal
+case class GADTPart(id: String, fun: TypeFun) extends VariantPart
 
-  case class Int64Literal(value: Long) extends Literal
+case class Variant(parts: List[VariantPart]) extends TypeDef
 
-  case class DoubleLiteral(value: Double) extends Literal
+case class RecordPart(id: String, ty: Type)
 
-  case class BooleanLiteral(value: Boolean) extends Literal
+case class Record(parts: List[RecordPart]) extends TypeDef
 
-  case class Binding(pats: Pat, expr: Expr)
+case class TypeAlias(ty: Type) extends TypeDef
 
-  case class Let(binding: Binding, expr: Expr) extends Expr
+case class TypeDecl(id: String, param: List[TypeGeneric], typedef: TypeDef) extends Decl
 
-  case class LetRec(binding: Binding, expr: Expr) extends Expr
+case class ValDecl(id: String, ty: Type, expr: Expr) extends Decl
 
-  sealed trait Pat
+case class ImportDecl(id: QualId, alias: Option[String]) extends Decl
 
-  case class TuplePattern(pats: List[Pat]) extends Pat
+sealed trait Decl extends Node
 
-  case class AsPattern(id: QualifiedId, pat: Pat) extends Pat
+case class QualId(ids: List[String])
 
-  case class VarPattern(id: QualifiedId) extends Pat
+sealed trait Expr extends Node
 
-  case class LiteralPattern(literal: Literal) extends Pat
+case class IntegerLiteral(x: Int) extends Expr
 
-  case object WildCardPattern extends Pat
-
-  sealed trait Statement
-
-  case class ExprStatement(expr: Expr) extends Statement
-
-  case class PatternStatement(pat: Pat, expr: Expr) extends Statement
-
-  case class LetStatement(binding: Binding, expr: Expr) extends Statement
-}
