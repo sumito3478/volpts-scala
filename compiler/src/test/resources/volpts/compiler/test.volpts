@@ -1,17 +1,69 @@
-let main = (args) ->
-  let a: int = 1
-  let b: string = "abcde"
-  let c: string = string.split(b, splitter = "b")
+// import
+import volpts.string
+
+// import with wildcard
+import volpts._
+
+// import with 'as'
+import volpts.some_long_name_module as some_module
+
+// record
+type record_example = record {
+  a: string
+  b: int
+}
+
+// record creation
+val record_example: record_example = {
+  a = "a"
+  b = 1
+}
+
+// ADT
+type either[`a] = variant {
+  left: `a
+  right: unit
+}
+
+// GADT
+type expr[`a] = variant {
+  int_expr: int -> expr[int]
+  bool_expr: bool -> expr[bool]
+  add_expr: (expr[int], expr[int]) -> expr[int]
+  mul_expr: (expr[int], expr[int]) -> expr[int]
+  eq_expr: (expr[int], expr[int]) -> expr[bool]
+}
+
+// using GADT
+val eval: expr[`a] -> `a = e -> match e {
+  case int_expr(n) => n
+  case bool_expr(b) => b
+  case add_expr(e1, e2) => add(eval(e1), eval(e2))
+  case mul_expr(e1, e2) => mul(eval(e1), eval(e2))
+  case eq_expr(e1, e2) => equals(eval(e1), eval(e2))
+}
+
+val main: (array[string]) -> unit = (args) ->
+  let a = 1
+  let b = "abcde"
+  import volpts.string
+  let c = string.split(b, splitter = "b")
   let d: string = string.toString(c)
   let e: tuple2[`a = int, `b = string] = tuple2(a, b)
   let f: tuple2[int, int] = match 1 {
     case 2 => tuple2(1, 1)
     case 1 => tuple2(2, 3)
-    //case tuple(a, b) => a
+    case tuple2(a, b) => a
   }
-  val g = 100
+  let g = 100
+  let h = match f {
+    case tuple2(a, b) => a
+  }
+  let tuple2(i, j) = f
+  let k = {
+    "a"
+  }
   import volpts.logger
   data option = some(`a) | none
   let t: some = some(f)
   logger.info(d)
-main
