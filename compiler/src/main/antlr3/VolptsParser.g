@@ -30,6 +30,24 @@ type_params : LBRACKET type_generic RBRACKET ;
 
 type_annot : COLON type ;
 
+constr : ID COLON LPAREN type (COMMA type)* RPAREN ARROW type ;
+
+adt_part : ID COLON type ;
+
+gadt_part : ID COLON LPAREN type (COLON type)* RPAREN ARROW type ;
+
+variant : VARIANT LCBRACKET (adt_part+ | gadt_part+) RCBRACKET ;
+
+record : RECORD LCBRACKET (ID COLON type semi) RCBRACKET ;
+
+type_decl : TYPE ID type_params? EQUAL (constr (OR constr)* | type) ;
+
+val_decl : VAL ID type_annot EQUAL expr ;
+
+import_decl : IMPORT qual_id (AS ID)? ;
+
+decl : type_decl | val_decl | import_decl ;
+
 integer_literal : MINUS? INTEGER_LITERAL ;
 
 floating_point_literal : MINUS? FLOATING_POINT_LITERAL ;
