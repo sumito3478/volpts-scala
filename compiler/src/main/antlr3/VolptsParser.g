@@ -30,7 +30,7 @@ type_app : LPAREN type_app RPAREN | type_app_raw ;
 
 type_simple : type_app | type_generic ;
 
-type_fun_raw : type_simple ARROW type ;
+type_fun_raw : (LPAREN type_simple (COMMA type_simple)+ RPAREN | type_simple) ARROW type ;
 
 type_fun : LPAREN type_fun RPAREN | type_fun_raw ;
 
@@ -74,7 +74,7 @@ let_expr : LET ID type_annot? EQUAL expr semi expr ;
 
 let_rec_expr : LET REC ID type_annot? EQUAL expr semi expr ;
 
-lambda_expr : ID ARROW expr;
+lambda_expr :  (LPAREN ID (COMMA ID)+ RPAREN | ID) ARROW expr;
 
 qual_id : ID (DOT ID)* ;
 
