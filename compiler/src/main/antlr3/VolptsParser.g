@@ -14,7 +14,7 @@ options {
   ParserUtils util = new ParserUtils();
 }
 
-compilation_unit : expr ;
+compilation_unit : (decl semi)+ ;
 
 semi @init { util.promoteNEW_LINE(retval, input); } : SEMICOLON | EOF | NEW_LINE ;
 
