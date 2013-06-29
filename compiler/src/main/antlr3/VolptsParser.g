@@ -84,11 +84,13 @@ match_part : CASE pat (IF expr)? DOUBLE_ARROW expr ;
 
 match_expr : MATCH expr LCBRACKET match_part+ RCBRACKET ;
 
+record_expr : RECORD LCBRACKET (ID EQUAL expr semi)+ RCBRACKET ;
+
 if_expr : IF LPAREN expr RPAREN expr ELSE expr ;
 
 compound_expr : LCBRACKET (expr semi)+ RCBRACKET ;
 
-expr_raw : lambda_expr | app_expr | qual_id | match_expr | compound_expr | let_rec_expr | let_expr | literal | if_expr | type_expr | import_expr ;
+expr_raw : lambda_expr | app_expr | qual_id | match_expr | compound_expr | let_rec_expr | let_expr | literal | if_expr | type_expr | import_expr | record_expr ;
 
 expr : LPAREN expr RPAREN | expr_raw ;
 

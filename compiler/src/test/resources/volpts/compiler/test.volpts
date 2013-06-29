@@ -14,10 +14,10 @@ type record_example = record {
 }
 
 // record creation
-// val record_example: record_example = {
-//   a = "a"
-//   b = 1
-// }
+val record_example: record_example = record {
+  a = "a"
+  b = 1
+}
 
 // ADT
 type either[`a] = variant {
