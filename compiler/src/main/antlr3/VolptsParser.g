@@ -18,29 +18,37 @@ compilation_unit : (decl semi)+ ;
 
 semi @init { util.promoteNEW_LINE(retval, input); } : SEMICOLON | EOF | NEW_LINE ;
 
-type_generic : BACK_QUOTE ID ;
+type_generic_raw : BACK_QUOTE ID ;
 
-type_args : LBRACKET (type_generic EQUAL)? type (COMMA (type_generic EQUAL)? type)* RBRACKET ;
+type_generic : LPAREN type_generic RPAREN | type_generic_raw ;
 
-type_app : qual_id type_args? ;
+type_args : LBRACKET (type_generic_raw EQUAL)? type (COMMA (type_generic_raw EQUAL)? type)* RBRACKET ;
 
-type : LPAREN type (COMMA type)* RPAREN ARROW type | type_app | type_generic ;
+type_app_raw : qual_id type_args? ;
 
-type_params : LBRACKET type_generic RBRACKET ;
+type_app : LPAREN type_app RPAREN | type_app_raw ;
+
+type_simple : type_app | type_generic ;
+
+type_fun_raw : type_simple ARROW type ;
+
+type_fun : LPAREN type_fun RPAREN | type_fun_raw ;
+
+type : type_fun | type_simple ;
+
+type_params : LBRACKET type_generic_raw (COMMA type_generic_raw)* RBRACKET ;
 
 type_annot : COLON type ;
 
-constr : ID COLON LPAREN type (COMMA type)* RPAREN ARROW type ;
+adt_part : ID OF type semi ;
 
-adt_part : ID COLON type ;
+gadt_part : ID COLON type_fun_raw semi ;
 
-gadt_part : ID COLON LPAREN type (COLON type)* RPAREN ARROW type ;
+variant : VARIANT LCBRACKET (gadt_part+ | adt_part+) RCBRACKET ;
 
-variant : VARIANT LCBRACKET (adt_part+ | gadt_part+) RCBRACKET ;
+record : RECORD LCBRACKET (ID COLON type semi)+ RCBRACKET ;
 
-record : RECORD LCBRACKET (ID COLON type semi) RCBRACKET ;
-
-type_decl : TYPE ID type_params? EQUAL (constr (OR constr)* | type) ;
+type_decl : TYPE ID type_params? EQUAL (record | variant | type);
 
 val_decl : VAL ID type_annot EQUAL expr ;
 
@@ -62,29 +70,27 @@ type_expr : type_decl semi expr ;
 
 import_expr : import_decl semi expr ;
 
-let_expr : LET pat EQUAL expr semi expr ;
+let_expr : LET ID type_annot? EQUAL expr semi expr ;
 
-let_rec_expr : LET REC pat EQUAL expr semi expr ;
+let_rec_expr : LET REC ID type_annot? EQUAL expr semi expr ;
 
-tuple_expr : LPAREN expr (COMMA expr)* RPAREN ;
-
-arg_part : ident_pat (COMMA arg_part)?;
-
-lambda_expr : LPAREN ID (COMMA ID)* RPAREN ARROW expr;
+lambda_expr : ID ARROW expr;
 
 qual_id : ID (DOT ID)* ;
 
-app_expr : (qual_id | LPAREN expr RPAREN) LPAREN (ID EQUAL)? expr (COMMA (ID EQUAL)? expr)* RPAREN;
+app_expr : (LPAREN expr RPAREN | qual_id) LPAREN (ID EQUAL)? expr (COMMA (ID EQUAL)? expr)* RPAREN ;
 
 match_part : CASE pat (IF expr)? DOUBLE_ARROW expr ;
 
-match_expr : MATCH expr LCBRACKET match_part ( match_part)* RCBRACKET ;
+match_expr : MATCH expr LCBRACKET match_part+ RCBRACKET ;
 
 if_expr : IF LPAREN expr RPAREN expr ELSE expr ;
 
 compound_expr : LCBRACKET (expr semi)+ RCBRACKET ;
 
-expr : lambda_expr | tuple_expr | app_expr | match_expr | compound_expr | let_rec_expr | let_expr | qual_id | literal | if_expr | type_expr | import_expr ;
+expr_raw : lambda_expr | app_expr | qual_id | match_expr | compound_expr | let_rec_expr | let_expr | literal | if_expr | type_expr | import_expr ;
+
+expr : LPAREN expr RPAREN | expr_raw ;
 
 ident_pat : ID type_annot?;
 
