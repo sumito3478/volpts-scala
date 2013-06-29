@@ -47,7 +47,7 @@ val main: array[string] -> unit = args ->
   let a = 1
   let b = "abcde"
   import volpts.string
-  let c = string.split(b, splitter = "b")
+  let c = string.split(b, delimitter = "b")
   let d: string = string.toString(c)
   let e: tuple2[`a = int, `b = string] = tuple2(a, b)
   let f: tuple2[int, int] = match 1 {
