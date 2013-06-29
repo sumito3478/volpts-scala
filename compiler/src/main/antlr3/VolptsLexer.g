@@ -37,9 +37,11 @@ AS : 'as' ;
 VARIANT : 'variant' ;
 OF : 'of' ;
 
-fragment IdentifierStart : UnicodeCategoryLl | UnicodeCategoryLu | UnicodeCategoryLt | UnicodeCategoryLo | UnicodeCategoryNl ;
+fragment IdentifierStart : '$' | '_' | UnicodeCategoryLl | UnicodeCategoryLu | UnicodeCategoryLt | UnicodeCategoryLo | UnicodeCategoryNl ;
 
-ID : IdentifierStart (IdentifierStart | Digit)* ;
+fragment IdentifierPart : Digit | IdentifierStart ;
+
+ID : IdentifierStart IdentifierPart* ;
 
 LPAREN : '(' ;
 RPAREN : ')' ;
