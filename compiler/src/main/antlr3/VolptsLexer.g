@@ -34,6 +34,8 @@ TRUE : 'true';
 FALSE : 'false' ;
 IMPORT : 'import' ;
 AS : 'as' ;
+VARIANT : 'variant' ;
+OF : 'of' ;
 
 fragment IdentifierStart : UnicodeCategoryLl | UnicodeCategoryLu | UnicodeCategoryLt | UnicodeCategoryLo | UnicodeCategoryNl ;
 
