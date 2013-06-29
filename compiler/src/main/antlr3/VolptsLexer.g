@@ -39,7 +39,7 @@ OF : 'of' ;
 
 fragment IdentifierStart : UnicodeCategoryLl | UnicodeCategoryLu | UnicodeCategoryLt | UnicodeCategoryLo | UnicodeCategoryNl ;
 
-ID : IdentifierStart ('0' .. '9' | IdentifierStart)* ;
+ID : IdentifierStart (IdentifierStart | Digit)* ;
 
 LPAREN : '(' ;
 RPAREN : ')' ;
