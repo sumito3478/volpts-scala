@@ -3,7 +3,6 @@ parser grammar VolptsParser;
 options {
   tokenVocab = VolptsLexer;
   output = AST;
-  backtrack = true;
 }
 
 @header {
@@ -18,31 +17,27 @@ compilation_unit : (decl semi)+ ;
 
 semi @init { util.promoteNEW_LINE(retval, input); } : SEMICOLON | EOF | NEW_LINE ;
 
-type_generic_raw : BACK_QUOTE ID ;
+type_generic : BACK_QUOTE ID ;
 
-type_generic : LPAREN type_generic RPAREN | type_generic_raw ;
+type_args : LBRACKET (type_generic EQUAL)? type (COMMA (type_generic EQUAL)? type)* RBRACKET ;
 
-type_args : LBRACKET (type_generic_raw EQUAL)? type (COMMA (type_generic_raw EQUAL)? type)* RBRACKET ;
+type_app : qual_id type_args? ;
 
-type_app_raw : qual_id type_args? ;
+type_simple : type_generic | type_app ;
 
-type_app : LPAREN type_app RPAREN | type_app_raw ;
+type_fun_multiple : LPAREN type_simple (COMMA type_simple)+ RPAREN ARROW type ;
 
-type_simple : type_app | type_generic ;
+type_fun_single : type_simple ARROW type ;
 
-type_fun_raw : (LPAREN type_simple (COMMA type_simple)+ RPAREN | type_simple) ARROW type ;
+type : type_fun_multiple | (type_simple ARROW) => type_fun_single | type_simple ;
 
-type_fun : LPAREN type_fun RPAREN | type_fun_raw ;
-
-type : type_fun | type_simple ;
-
-type_params : LBRACKET type_generic_raw (COMMA type_generic_raw)* RBRACKET ;
+type_params : LBRACKET type_generic (COMMA type_generic)* RBRACKET ;
 
 type_annot : COLON type ;
 
 adt_part : ID OF type semi ;
 
-gadt_part : ID COLON type_fun_raw semi ;
+gadt_part : ID COLON (type_fun_single | type_fun_multiple) semi ;
 
 variant : VARIANT LCBRACKET (gadt_part+ | adt_part+) RCBRACKET ;
 
@@ -74,7 +69,9 @@ let_expr : LET ID type_annot? EQUAL expr semi expr ;
 
 let_rec_expr : LET REC ID type_annot? EQUAL expr semi expr ;
 
-lambda_expr :  (LPAREN ID (COMMA ID)+ RPAREN | ID) ARROW expr;
+lambda_expr_single : ID ARROW expr ;
+
+lambda_expr_multiple : LPAREN ID (COMMA ID)+ RPAREN ARROW expr ;
 
 qual_id : ID (DOT ID)* ;
 
@@ -94,9 +91,9 @@ if_expr : IF LPAREN expr RPAREN expr ELSE expr ;
 
 compound_expr : LCBRACKET (expr semi)+ RCBRACKET ;
 
-expr_raw : lambda_expr | app_expr | qual_expr | id_expr | match_expr | compound_expr | let_rec_expr | let_expr | literal | if_expr | type_expr | import_expr | record_expr ;
+expr_raw : lambda_expr_multiple | (ID ARROW) => lambda_expr_single | app_expr | (ID DOT) => qual_expr | id_expr | match_expr | compound_expr | let_rec_expr | let_expr | literal | if_expr | type_expr | import_expr | record_expr ;
 
-expr : LPAREN expr RPAREN | expr_raw ;
+expr : (LPAREN ID COMMA) => expr_raw | (LPAREN) => LPAREN expr RPAREN | expr_raw ;
 
 ident_pat : ID type_annot?;
 
