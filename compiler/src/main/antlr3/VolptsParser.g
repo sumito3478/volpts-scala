@@ -70,7 +70,7 @@ tuple_expr : LPAREN expr (COMMA expr)* RPAREN ;
 
 arg_part : ident_pat (COMMA arg_part)?;
 
-lambda_expr : LPAREN pat (COMMA pat)* RPAREN ARROW expr;
+lambda_expr : LPAREN ID (COMMA ID)* RPAREN ARROW expr;
 
 qual_id : ID (DOT ID)* ;
 
