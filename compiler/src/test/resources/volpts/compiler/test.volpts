@@ -14,24 +14,24 @@ type record_example = record {
 }
 
 // record creation
-val record_example: record_example = {
-  a = "a"
-  b = 1
-}
+// val record_example: record_example = {
+//   a = "a"
+//   b = 1
+// }
 
 // ADT
 type either[`a] = variant {
-  left: `a
-  right: unit
+  left of `a
+  right of unit
 }
 
 // GADT
 type expr[`a] = variant {
   int_expr: int -> expr[int]
   bool_expr: bool -> expr[bool]
-  add_expr: (expr[int], expr[int]) -> expr[int]
-  mul_expr: (expr[int], expr[int]) -> expr[int]
-  eq_expr: (expr[int], expr[int]) -> expr[bool]
+  add_expr: expr[int] -> expr[int] -> expr[int]
+  mul_expr: expr[int] -> expr[int] -> expr[int]
+  eq_expr: expr[int] -> expr[int] -> expr[bool]
 }
 
 // using GADT
@@ -43,7 +43,7 @@ val eval: expr[`a] -> `a = e -> match e {
   case eq_expr(e1, e2) => equals(eval(e1), eval(e2))
 }
 
-val main: (array[string]) -> unit = (args) ->
+val main: array[string] -> unit = args ->
   let a = 1
   let b = "abcde"
   import volpts.string
@@ -59,11 +59,9 @@ val main: (array[string]) -> unit = (args) ->
   let h = match f {
     case tuple2(a, b) => a
   }
-  let tuple2(i, j) = f
   let k = {
     "a"
   }
   import volpts.logger
-  data option = some(`a) | none
   let t: some = some(f)
   logger.info(d)
