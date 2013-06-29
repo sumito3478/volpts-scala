@@ -78,6 +78,10 @@ lambda_expr :  (LPAREN ID (COMMA ID)+ RPAREN | ID) ARROW expr;
 
 qual_id : ID (DOT ID)* ;
 
+qual_expr : qual_id ;
+
+id_expr : ID ; // qual_expr does not match single ID if the next 'semi' is implicit (i.e. promoted NEW_LINE)...
+
 app_expr : (LPAREN expr RPAREN | qual_id) LPAREN (ID EQUAL)? expr (COMMA (ID EQUAL)? expr)* RPAREN ;
 
 match_part : CASE pat (IF expr)? DOUBLE_ARROW expr ;
@@ -90,7 +94,7 @@ if_expr : IF LPAREN expr RPAREN expr ELSE expr ;
 
 compound_expr : LCBRACKET (expr semi)+ RCBRACKET ;
 
-expr_raw : lambda_expr | app_expr | qual_id | match_expr | compound_expr | let_rec_expr | let_expr | literal | if_expr | type_expr | import_expr | record_expr ;
+expr_raw : lambda_expr | app_expr | qual_expr | id_expr | match_expr | compound_expr | let_rec_expr | let_expr | literal | if_expr | type_expr | import_expr | record_expr ;
 
 expr : LPAREN expr RPAREN | expr_raw ;
 
