@@ -58,11 +58,9 @@ string_literal : STRING_LITERAL ;
 
 literal : integer_literal | floating_point_literal | boolean_literal | string_literal ;
 
-constr : ID (LPAREN (type (COMMA type)* | ID COLON type (COMMA ID COLON type)*)? RPAREN)? ;
+type_expr : type_decl semi expr ;
 
-data_expr : DATA ID type_params? EQUAL constr (OR constr)* semi expr ;
-
-val_expr : VAL ident_pat EQUAL expr semi expr ;
+import_expr : import_decl semi expr ;
 
 let_expr : LET pat EQUAL expr semi expr ;
 
