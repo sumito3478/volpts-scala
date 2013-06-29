@@ -2,6 +2,40 @@ lexer grammar VolptsLexer;
 
 import VolptsDef;
 
+tokens {
+  // imaginary tokens for ast
+  TYPE_GENERIC;
+  TYPE_APP;
+  DECL;
+  TYPE_FUNCTION_PARAMS;
+  TYPE_FUNCTION;
+  TYPE_PARAMS;
+  ADT_PART;
+  GADT_PART;
+  RECORD_PART;
+  IMPORT_DECL;
+  INTEGER;
+  FLOATING_POINT;
+  BOOLEAN;
+  STRING;
+  LITERAL_EXPR;
+  TYPE_EXPR;
+  IMPORT_EXPR;
+  LETREC_EXPR;
+  LAMBDA_EXPR;
+  QUAL_ID;
+  ID_EXPR;
+  APP_ARG;
+  APP_EXPR;
+  MATCH_PART;
+  RECORD_EXPR_PART;
+  RECORD_EXPR;
+  COMPOUND_EXPR;
+  IDENT_PAT;
+  UNAPPLY_PAT;
+  LITERAL_PAT;
+}
+
 @header {
   package volpts.compiler.antlr;
 }
