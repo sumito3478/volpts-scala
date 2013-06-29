@@ -82,7 +82,7 @@ match_expr : MATCH expr LCBRACKET match_part ( match_part)* RCBRACKET ;
 
 if_expr : IF LPAREN expr RPAREN expr ELSE expr ;
 
-compound_expr : LCBRACKET expr (semi expr)* RCBRACKET ;
+compound_expr : LCBRACKET (expr semi)+ RCBRACKET ;
 
 import_expr : IMPORT qual_id (AS ID)? semi expr;
 
